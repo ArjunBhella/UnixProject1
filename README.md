@@ -15,24 +15,24 @@
     - [rsync](#rsync)
     - [Duplicity](#duplicity)
     - [BackupPC](#backuppc)
+    - [Backups Tutorial](#backups-tutorial)
   - [Backup Policies](#backup-policies)
     - [Full Backup vs. Incremental Backup](#full-backup-vs-incremental-backup)
     - [Retention Policies](#retention-policies)
-  - [Backup Routines](#backup-routines)
-    - [Regular Schedule](#regular-schedule)
-    - [Monitoring and Verification](#monitoring-and-verification)
+    - [Backup Routines Tutorial](#backup-routines-tutorial)
 - [System Security: Common Tasks to Harden a UNIX Server](#system-security-common-tasks-to-harden-a-unix-server)
   - [Introduction](#introduction-2)
   - [Update and Patch Regularly](#update-and-patch-regularly)
   - [Firewall Configuration](#firewall-configuration)
   - [User Account Management](#user-account-management)
   - [Simple Security Measures](#simple-security-measures)
+  - [Security Measures Tutorial](#security-measures-tutorial)
 - [Conclusion](#conclusion)
 
 
 ## Introduction
 
-Welcome to the comprehensive guide on securely connecting to your Linux server. This guide is tailored for beginners, providing step-by-step instructions and insights to enhance your server's security using SSH.Also some basic knowledge I picked up doing research on Backups including popular tools and routines aswell basic knowledge on 
+Welcome to the comprehensive guide on securely connecting to your Linux server. This guide is tailored for beginners, providing step-by-step instructions and insights to enhance your server's security using SSH. Also, some basic knowledge I picked up doing research on Backups, including popular tools and routines, as well as basic knowledge on 
 
 ## Understanding SSH
 
@@ -135,25 +135,50 @@ This README explores fundamental aspects of data backups, covering popular tools
 
 [BackupPC](http://backuppc.sourceforge.net/) is a high-performance system designed for backing up PCs to a server's disk. It features a user-friendly web interface and supports essential features like pooling, compression, and full/incremental backups.
 
-### Backup Policies
+#### Backups Tutorial
 
-#### Full Backup vs. Incremental Backup
+**Simple Backup Tutorial: Using rsync**
 
-Choosing between a full backup and an incremental backup depends on factors like storage capacity and backup frequency. Full backups copy all data, while incremental backups only copy changes, optimizing storage.
+1. Open a terminal on your local machine.
 
-#### Retention Policies
+2. Use the following command to perform a simple backup using rsync:
 
-Retention policies determine how long backups are retained. Common strategies include daily, weekly, and monthly backups with varying retention periods, balancing data preservation and storage efficiency.
+    ```bash
+    rsync -avz /path/to/source/ user@remote_server:/path/to/destination/
+    ```
 
-### Backup Routines
+    This command syncs the source directory to the destination directory on the remote server.
 
-#### Regular Schedule
+3. Monitor the progress and ensure the backup completes successfully.
 
-Establishing a regular backup schedule, whether daily or weekly, ensures consistent data protection. Customize it based on data criticality to maintain a reliable backup strategy.
+#### Backup Policies Tutorial
 
-#### Monitoring and Verification
+**Setting Up Retention Policies**
 
-Regularly monitor backup logs and perform test restores to verify data integrity. This proactive approach identifies issues early, ensuring reliable backups when needed.
+1. Determine your retention requirements, e.g., daily, weekly, and monthly backups.
+
+2. Use a tool like BackupPC to configure retention policies based on your requirements.
+
+3. Regularly review and adjust retention policies to balance data preservation and storage efficiency.
+
+#### Backup Routines Tutorial
+
+**Automating Regular Backups with cron**
+
+1. Open your server's crontab configuration:
+
+    ```bash
+    crontab -e
+    ```
+
+2. Add a cron job entry for your backup routine. For example, to run a backup every day at 3 AM:
+
+    ```bash
+    0 3 * * * rsync -avz /path/to/source/ /path/to/backup/
+    ```
+
+    Save and exit the crontab editor.
+
 ### Introduction-2
 
 This section covers common tasks to enhance the security of your UNIX server. Implementing these measures contributes to a robust defense against potential threats.
@@ -164,19 +189,81 @@ This section covers common tasks to enhance the security of your UNIX server. Im
 
 Regularly updating and patching your server's operating system and installed software is crucial for addressing security vulnerabilities. Utilize package managers to streamline the update process.
 
+**Updating Your System with apt (Debian/Ubuntu)**
+
+1. Open a terminal.
+
+2. Run the following commands:
+
+    ```bash
+    sudo apt update
+    sudo apt upgrade
+    ```
+
+3. Follow the prompts to install updates.
+
 ### Firewall Configuration
 
 Configure a firewall to control incoming and outgoing network traffic. Tools like `ufw` (Uncomplicated Firewall) simplify firewall management for users who may not be familiar with complex iptables rules.
+
+**Configuring Firewall with ufw**
+
+1. Install ufw (if not installed):
+
+    ```bash
+    sudo apt install ufw
+    ```
+
+2. Enable ufw:
+
+    ```bash
+    sudo ufw enable
+    ```
+
+3. Allow necessary services, e.g., SSH:
+
+    ```bash
+    sudo ufw allow OpenSSH
+    ```
 
 ### User Account Management
 
 Practicing secure user account management involves regularly reviewing and managing user access. Remove unnecessary accounts, enforce strong password policies, and consider implementing periodic access reviews.
 
+**Managing User Accounts with userdel**
+
+1. Open a terminal.
+
+2. Run the following command to delete a user:
+
+    ```bash
+    sudo userdel -r username
+    ```
+
+    Replace "username" with the actual username.
+
 ### Simple Security Measures
 
 Implement simple security measures like disabling unnecessary services, restricting unnecessary access, and regularly auditing system logs for unusual activities.
 
+**Disabling Unnecessary Services**
+
+1. Identify unnecessary services:
+
+    ```bash
+    sudo systemctl list-unit-files --type=service
+    ```
+
+2. Disable a service:
+
+    ```bash
+    sudo systemctl disable servicename
+    ```
+
+    Replace "servicename" with the actual service name.
+
 ## Conclusion
+
 In conclusion, this comprehensive guide empowers you with essential knowledge to secure your Linux server effectively. From establishing secure SSH connections and implementing 2FA/MFA to employing robust backup strategies and enhancing overall system security, these practices form a resilient foundation for a well-protected server environment.
 
 **Key Takeaways:**
@@ -186,7 +273,6 @@ In conclusion, this comprehensive guide empowers you with essential knowledge to
 - **Effective Backups:** Safeguard valuable data with popular tools and best backup practices.
 - **System Security Measures:** Harden your UNIX server with simple yet impactful security tasks.
 
-This README introduces essential backup tools, highlights key practices, and emphasizes the importance of a comprehensive backup strategy for safeguarding your data.
-This README introduces essential backup tools, highlights key practices, and emphasizes the importance of a comprehensive backup strategy for safeguarding your data.
+This README introduces essential backup tools, highlights key practices, and emphasizes the importance of a comprehensive backup strategy for safeguarding your data. 
 
 [License](LICENSE.txt) - This README is provided under the [MIT License](LICENSE.txt).
